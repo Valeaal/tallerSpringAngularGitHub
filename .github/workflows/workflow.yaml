@@ -19,6 +19,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Build spring image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./training-spring-boot
+          file: ./training-spring-boot/Dockerfile
+          push: true
+          tags: valeal/training-spring-boot:0.0.1-SNAPSHOT
+
       - name: Build angular image
         uses: docker/build-push-action@v6
         with:
@@ -27,19 +35,11 @@ jobs:
           push: true
           tags: valeal/training-angular:0.0.1-SNAPSHOT
 
-      - name: Build spring image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./trainingspringboot
-          file: ./trainingspringboot/Dockerfile
-          push: true
-          tags: valeal/trainingspringboot:0.0.1-SNAPSHOT
-
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
         with:
           version: 'latest'
-          
+
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f ./springboot-deployment.yaml
